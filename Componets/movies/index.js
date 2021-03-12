@@ -1,76 +1,87 @@
 const MovieApp = Vue.component('movie-app',{
     template:` 
-            <div  class="container">
-                <h5>Bienvenido {{user.name}} {{user.lastname}}</h5>  
-                <SearchComp ref="SearchComp" v-model="searchMovies"/>
-                
-                <div v-show=" !Object.keys(searchMovies).length">
-                    <h2>Peliculas App </h2>                    
-                    
-                    <div class="row">
-                        <div class=" col-12 col-md-6 col-lg-4 py-2" :ref="'movie-'+item.id" v-for="(item,key) in movies">
-                            <MovieComponent  
-                                :id="item.id" 
-                                :title="item.title" 
-                                :cover="item.poster_path" 
-                                :synopsis="item.overview" 
-                                :key="key"
-                                message="hola"
-                                :like="item.like"
-                                :showLike="item.showLike"
-                                @changeLike="onToogleLike"                    
-                            />
-
-                        </div>
-                    </div>    
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item"><button class="page-link" @click="volverPage()">Previous</button></li>
-                            <button @click="setPage(n)" class="btn m-1" :class="{
-                                'btn-like': n != page,
-                                'btn-primary': n ==page
-                            }" v-for="(n,index) in countPage" :key="index" > 
-                                {{n}}
-                            </button>
-                            <li class="page-item"><button class="page-link" @click="avanzarPage()">Next</button></li>
-                        </ul>
-                    </nav>
+            <div class="home">
+                <nav class="navbar navbar-dark bg-dark">
+                    <div class="container">
+                        <a class="navbar-brand" href="#">                        
+                            Bienvenido {{user.name}} {{user.lastname}}
+                        </a>
+                        <form class="form-inline my-2 my-lg-0">
+                            <SearchComp ref="SearchComp" v-model="searchMovies"/>
+                        </form>  
+                    </div>                      
+                </nav>
+                <div class="container title">
+                    <h2 v-show=" !Object.keys(searchMovies).length" >Peliculas mas Populares </h2>
+                    <h2 v-show=" Object.keys(searchMovies).length" >Resultados </h2>
                 </div>
+                <div  class="container">                                        
+                    <div v-show=" !Object.keys(searchMovies).length">                                                                                            
+                        <div class="row">
+                            <div class=" col-12 col-md-6 col-lg-4 py-2" :ref="'movie-'+item.id" v-for="(item,key) in movies">
+                                <MovieComponent  
+                                    :id="item.id" 
+                                    :title="item.title" 
+                                    :cover="item.poster_path" 
+                                    :synopsis="item.overview" 
+                                    :key="key"
+                                    message="hola"
+                                    :like="item.like"
+                                    :showLike="item.showLike"
+                                    @changeLike="onToogleLike"                    
+                                />
 
-
-                <div v-if="Object.keys(searchMovies).length">
-                    <h2>Resultados: </h2>
-                    <div class="row">
-                        <div class=" col-12 col-md-6 col-lg-4 py-2" :ref="'movie-'+item.id" 
-                        v-for="(item,key) in searchMovies.results"
-                        v-if="item.poster_path" >
-                            <MovieComponent  
-                                :id="item.id" 
-                                :title="item.title" 
-                                :cover= "item.poster_path"
-                                :synopsis="item.overview" 
-                                :key="key"
-                                message="hola"
-                                :like="item.like"
-                                :showLike="item.showLike"
-                                @changeLike="onToogleLike"                    
-                            />
-                        </div>
+                            </div>
+                        </div>    
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item"><button class="page-link" @click="volverPage()">Previous</button></li>
+                                <button @click="setPage(n)" class="btn m-1" :class="{
+                                    'btn-like': n != page,
+                                    'btn-primary': n ==page
+                                }" v-for="(n,index) in countPage" :key="index" > 
+                                    {{n}}
+                                </button>
+                                <li class="page-item"><button class="page-link" @click="avanzarPage()">Next</button></li>
+                            </ul>
+                        </nav>
                     </div>
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item"><button class="page-link" @click="$refs.SearchComp.volverPage()">Previous</button></li>
-                            <button @click="$refs.SearchComp.setPage(n)" class="btn m-1" :class="{
-                                'btn-like': n != $refs.SearchComp.page,
-                                'btn-primary': n == $refs.SearchComp.page
-                            }" v-for="(n,index) in countPage_child" :key="index" > 
-                            {{n}}
-                            </button>
-                            <li class="page-item"><button class="page-link" @click="$refs.SearchComp.avanzarPage()">Next</button></li>
-                        </ul>
-                    </nav>  
-                </div>                      
-            </div>`
+
+
+                    <div v-if="Object.keys(searchMovies).length">
+
+                        <div class="row">
+                            <div class=" col-12 col-md-6 col-lg-4 py-2" :ref="'movie-'+item.id" 
+                            v-for="(item,key) in searchMovies.results"
+                            v-if="item.poster_path" >
+                                <MovieComponent  
+                                    :id="item.id" 
+                                    :title="item.title" 
+                                    :cover= "item.poster_path"
+                                    :synopsis="item.overview" 
+                                    :key="key"
+                                    message="hola"
+                                    :like="item.like"
+                                    :showLike="item.showLike"
+                                    @changeLike="onToogleLike"                    
+                                />
+                            </div>
+                        </div>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item"><button class="page-link" @click="$refs.SearchComp.volverPage()">Previous</button></li>
+                                <button @click="$refs.SearchComp.setPage(n)" class="btn m-1" :class="{
+                                    'btn-like': n != $refs.SearchComp.page,
+                                    'btn-primary': n == $refs.SearchComp.page
+                                }" v-for="(n,index) in countPage_child" :key="index" > 
+                                {{n}}
+                                </button>
+                                <li class="page-item"><button class="page-link" @click="$refs.SearchComp.avanzarPage()">Next</button></li>
+                            </ul>
+                        </nav>  
+                    </div>                      
+                </div>
+            </div>    `
     ,
     data (){
         return{
@@ -90,8 +101,8 @@ const MovieApp = Vue.component('movie-app',{
             },
             page: 1,
             total_pages:null,
-            searchMovies:{                
-            },
+            searchMovies:[               
+            ],
             infPage:1,
             supPage:10,            
         }
@@ -186,11 +197,20 @@ const MovieApp = Vue.component('movie-app',{
             
         },
         onToogleLike (data){            
-            let movieLike = this.movies.find(movie => movie.id === data.id)
-            movieLike.like = data.like
-            this.showLike = data.like            
-            this.toogleFavMovie(movieLike)
-            //this.$store.commit('toogleFavMovie',movieLike)  // con ...Vuex.mapMutations se simplifica esto
+            if(Object.keys(this.searchMovies).length){
+                //console.log(this.searchMovies.results)
+                let movieLike = this.searchMovies.results.find(movie => movie.id === data.id)            
+                movieLike.like = data.like
+                this.showLike = data.like            
+                this.toogleFavMovie(movieLike) // lamada al Vuex
+            }else{
+                let movieLike = this.movies.find(movie => movie.id === data.id)            
+                movieLike.like = data.like
+                this.showLike = data.like            
+                this.toogleFavMovie(movieLike)
+                //this.$store.commit('toogleFavMovie',movieLike)  // con ...Vuex.mapMutations se simplifica esto
+            }
+            
         },
         getPopularMovies(){
             const URL = `${BASEURL}discover/movie?sort_by=popularity.desc&api_key=${APIKEY}&page=${this.page}`

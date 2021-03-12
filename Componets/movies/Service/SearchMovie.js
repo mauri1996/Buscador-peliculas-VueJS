@@ -1,7 +1,7 @@
 let SearchComp = {
     template : `
         <div>
-            <form @submit.prevent="newSearch" class="form-inline md-form form-sm mt-0">
+            <form class="form-inline md-form form-sm mt-0">
                 <div class="input-group md-form form-sm form-2 pl-0 w-100">
                     <div v-show="query" class="input-group-append">                        
                         <span class="btn btn-danger" @click="reset()">
@@ -14,13 +14,16 @@ let SearchComp = {
                         aria-label="Buscar"                        
                         v-model="query"
                         >
-                    <div class="input-group-append">
-                        <button class="input-group-text green">                        
-                            <i class="fas fa-search text-grey"
-                            aria-hidden="true">
-                            </i>
-                        </button>                        
-                    </div>
+                    
+                    <button class="input-group-text" @click="newSearch()">                        
+                        <i class="fas fa-search text-grey"
+                        aria-hidden="true">
+                        </i>
+                    </button>                                                              
+                
+                    <button class="input-group-text" @click="reset()">                        
+                        <i class="fas fa-home"aria-hidden="true"></i>
+                    </button>
                 </div>
             </form>
         </div>        
@@ -53,6 +56,9 @@ let SearchComp = {
             this.searchMovie()
         },
         searchMovie(){
+            if(this.query ===''){
+                return this.$parent.getPopularMovies()
+            }
             //@submit.prevent="searchMovie"  para prevenir que siga el submit
             const URL = `${BASEURL}search/movie?query=${this.query}&api_key=${APIKEY}&language=es-MX&page=${this.page}`
             //console.log(URL)
@@ -65,7 +71,7 @@ let SearchComp = {
                     }else{
                         this.total_pages = data.total_pages                                                            
                     }  
-                    
+                    data.like=false
                     this.$emit('input',data) // emite y actuliza directamente searchMovies
                 })
         },

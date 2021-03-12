@@ -24,7 +24,7 @@ let MovieComponent ={
                         }"></i>
 
                     </button>
-                    <router-link class="btn btn-primary" :to="{name:'pelicula' , params:{id:id}}"> Detalle</router-link>                    
+                    <router-link class="btn btn-primary"  data-toggle="modal" :to="{name:'pelicula' , params:{id:id}}"> Detalle</router-link>                    
                 </div>
                 
             </div>
