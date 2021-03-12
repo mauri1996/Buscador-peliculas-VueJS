@@ -1,7 +1,3 @@
-const APIKEY= '65d3997f2a8fd92380287a83ee521ad6'
-const BASEURL='https://api.themoviedb.org/3/'
-/// :cover="item.poster_path"  -> xq eso devuelve la api 
-
 const MovieApp = Vue.component('movie-app',{
     template:` 
             <div  class="container">
@@ -26,14 +22,18 @@ const MovieApp = Vue.component('movie-app',{
 
                         </div>
                     </div>    
-                    <div class="grid">
-                        <button @click="setPage(n)" class="btn m-1" :class="{
-                            'btn-like': n != page,
-                            'btn-primary': n ==page
-                        }" v-for="(n,index) in total_pages" :key="index" > 
-                        {{n}}
-                        </button>
-                    </div>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item"><button class="page-link" @click="volverPage()">Previous</button></li>
+                            <button @click="setPage(n)" class="btn m-1" :class="{
+                                'btn-like': n != page,
+                                'btn-primary': n ==page
+                            }" v-for="(n,index) in countPage" :key="index" > 
+                                {{n}}
+                            </button>
+                            <li class="page-item"><button class="page-link" @click="avanzarPage()">Next</button></li>
+                        </ul>
+                    </nav>
                 </div>
 
 
@@ -54,19 +54,21 @@ const MovieApp = Vue.component('movie-app',{
                                 :showLike="item.showLike"
                                 @changeLike="onToogleLike"                    
                             />
-
                         </div>
-                    </div>    
-                    <div class="grid">
-                        <button @click="$refs.SearchComp.setPage(n)" class="btn m-1" :class="{
-                            'btn-like': n != searchMovies.page,
-                            'btn-primary': n ==searchMovies.page
-                        }" v-for="(n,index) in searchMovies.total_pages" :key="index" > 
-                        {{n}}
-                        </button>
                     </div>
-                </div>
-
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item"><button class="page-link" @click="$refs.SearchComp.volverPage()">Previous</button></li>
+                            <button @click="$refs.SearchComp.setPage(n)" class="btn m-1" :class="{
+                                'btn-like': n != searchMovies.page,
+                                'btn-primary': n ==searchMovies.page
+                            }" v-for="(n,index) in searchMovies.total_pages" :key="index" > 
+                            {{n}}
+                            </button>
+                            <li class="page-item"><button class="page-link" @click="$refs.SearchComp.avanzarPage()">Next</button></li>
+                        </ul>
+                    </nav>  
+                </div>                      
             </div>`
     ,
     data (){
@@ -86,16 +88,26 @@ const MovieApp = Vue.component('movie-app',{
             },
             page: 1,
             total_pages:null,
-            searchMovies:{
-                
-            }
-            
+            searchMovies:{                
+            },
+            infPage:1,
+            supPage:10,            
         }
     },   
     components:{
         MovieComponent,
         SearchComp
         
+    },
+    computed:{
+        countPage(){
+            let range=[]
+            for (i = this.infPage; i<=this.supPage ;i++){
+                range.push(i)
+            }
+            //console.log(range)
+            return range
+        }
     },
     methods:{
         setPage(n){
@@ -112,7 +124,42 @@ const MovieApp = Vue.component('movie-app',{
             this.page = n
             this.getPopularMovies()
         },
+        volverPage(){
+            
+            if(this.page === 1){
+                this.page=1
 
+            }else if(this.page === this.infPage){
+                this.supPage = this.infPage-1
+                this.infPage = this.infPage-10                
+                this.page = this.page-1
+            }else{
+                this.page = this.page-1
+            }
+            this.getPopularMovies()
+            
+        },
+        avanzarPage(){
+
+            if(this.page === this.total_pages){
+                this.page=this.total_pages
+
+            }else if(this.page === this.supPage && (this.total_pages-this.supPage)>10 ){
+                
+                this.infPage = this.supPage+1
+                this.supPage = this.supPage+10
+                this.page = this.page+1
+            }else if(this.page === this.supPage && (this.total_pages-this.supPage)<10 ){
+                
+                this.infPage = this.supPage+1
+                this.supPage = this.total_pages
+                this.page = this.page+1
+            }else{
+                this.page = this.page+1
+            }
+            this.getPopularMovies()
+            
+        },
         onToogleLike (data){
             let movieLike = this.movies.find(movie => movie.id === data.id)
             movieLike.like = data.like

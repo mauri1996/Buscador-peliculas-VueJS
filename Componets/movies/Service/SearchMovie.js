@@ -29,7 +29,8 @@ let SearchComp = {
         return {
             inputvalue:'',
             query:'',
-            page:1
+            page:1,
+            total_pages:1
         }
     },
 
@@ -40,13 +41,47 @@ let SearchComp = {
             //console.log(URL)
             fetch(URL)
                 .then(response => response.json())
-                .then((data) => {
+                .then((data) => {      
+                    this.total_pages = data.total_pages              
                     this.$emit('input',data) // emite y actuliza directamente searchMovies
                 })
         },
         setPage(page){
             this.page=page
+            this.$parent.page=this.page
             this.searchMovie()
+        },
+        volverPage(){
+
+            if(this.page === 1){
+                this.page=1
+
+            }else if(this.page === this.infPage){
+                this.supPage = this.infPage-1
+                this.infPage = this.infPage-10                
+                this.page = this.page-1
+            }else{
+                this.page = this.page-1
+            }
+            this.searchMovie()         
+        },
+        avanzarPage(){
+            if(this.page === this.total_pages){
+                this.page=this.total_pages
+
+            }else if(this.page === this.supPage && (this.total_pages-this.supPage)>10 ){
+                this.infPage = this.supPage+1
+                this.supPage = this.supPage+10
+                this.page = this.page+1
+            }else if(this.page === this.supPage && (this.total_pages-this.supPage)<10 ){
+                this.infPage = this.supPage+1
+                this.supPage = this.total_pages
+                this.page = this.page+1
+            }else{
+                this.page = this.page+1
+            }
+            this.searchMovie() 
+            
         },
         reset(){
             this.query=''

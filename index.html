@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./styless.css" rel="stylesheet"></link> 
+    <link href="/styless.css" rel="stylesheet"></link> 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <title>Buscador de peliculas</title>
 </head>
@@ -20,11 +20,11 @@
     <script src="https://kit.fontawesome.com/1686952731.js" crossorigin="anonymous"></script>
 
     <!-- Componentes -->
-    <script src="./Componets/movies/ImgMovie.js"></script>
-    <script src="./Componets/movies/MovieComponent.js"></script>
-    <script src="./Componets/movies/Service/SearchMovie.js"></script>
-
-    <script src="./Componets/movies/index.js"></script>               
+    <script src="/Componets/movies/ImgMovie.js"></script>
+    <script src="/Componets/movies/MovieDetalle.js"></script>
+    <script src="/Componets/movies/MovieComponent.js"></script>
+    <script src="/Componets/movies/Service/SearchMovie.js"></script>
+    <script src="/Componets/movies/index.js"></script>               
 
     <style>
 
@@ -64,8 +64,18 @@
     </div>
 
     <script>
+        const APIKEY= '65d3997f2a8fd92380287a83ee521ad6'
+        const BASEURL='https://api.themoviedb.org/3/'
+        /// :cover="item.poster_path"  -> xq eso devuelve la api 
+
         /// funcion q se puede usar globlamente
         Vue.mixin({
+            data(){
+                return{
+                    apiConfig:`?api_key=${APIKEY}&language=es-MX`,  // se llama desde cuelqueir lado ${this.apiConfig}
+                    apiBaseURl: BASEURL
+                }
+            },
             filters:{
                 completarPoster(str){
                     return `https://www.themoviedb.org/t/p/w600_and_h900_bestv2${str}`
@@ -79,9 +89,9 @@
 
         let routes =[
             {
-                path: '/',
-                name: 'home',
-                component: MovieApp // debe tener una variable en los componentes
+                path: '/pelicula/:id',
+                name: 'pelicula',
+                component: MovieDetails // debe tener una variable en los componentes
             },
             {
                 path: '/test',
@@ -92,6 +102,11 @@
                     Live Server › Settings: File
                     When set, serve this file (server root relative) for every 404 (useful for single-page applications)
                 */
+            },
+            {
+                path: '/',
+                name: 'home',
+                component: MovieApp // debe tener una variable en los componentes
             },
             
         ]
@@ -107,7 +122,7 @@
         })
 
     </script>
-
+    
 
 </body>
 </html>

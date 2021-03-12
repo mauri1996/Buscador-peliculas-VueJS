@@ -1,6 +1,6 @@
 let MovieComponent ={
     template: `
-            <div :id="id | formatId" class="card" :class="{'movie-like': like}">
+            <div v-if="cover" :id="id | formatId" class="card" :class="{'movie-like': like}">
                 <div class="card-img-top">            
                     <ImageMovie :cover="cover | completarPoster " :like="like" ></ImageMovie>
                 </div>
@@ -24,7 +24,7 @@ let MovieComponent ={
                         }"></i>
 
                     </button>
-                    <hr>
+                    <router-link class="btn btn-primary" :to="{name:'pelicula' , params:{id:id}}"> Detalle</router-link>                    
                 </div>
                 
             </div>
