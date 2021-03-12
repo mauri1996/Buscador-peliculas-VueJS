@@ -37,7 +37,7 @@ const MovieApp = Vue.component('movie-app',{
                 </div>
 
 
-                <div v-show="Object.keys(searchMovies).length">
+                <div v-if="Object.keys(searchMovies).length">
                     <h2>Resultados: </h2>
                     <div class="row">
                         <div class=" col-12 col-md-6 col-lg-4 py-2" :ref="'movie-'+item.id" 
@@ -60,9 +60,9 @@ const MovieApp = Vue.component('movie-app',{
                         <ul class="pagination justify-content-center">
                             <li class="page-item"><button class="page-link" @click="$refs.SearchComp.volverPage()">Previous</button></li>
                             <button @click="$refs.SearchComp.setPage(n)" class="btn m-1" :class="{
-                                'btn-like': n != searchMovies.page,
-                                'btn-primary': n ==searchMovies.page
-                            }" v-for="(n,index) in searchMovies.total_pages" :key="index" > 
+                                'btn-like': n != $refs.SearchComp.page,
+                                'btn-primary': n == $refs.SearchComp.page
+                            }" v-for="(n,index) in countPage_child" :key="index" > 
                             {{n}}
                             </button>
                             <li class="page-item"><button class="page-link" @click="$refs.SearchComp.avanzarPage()">Next</button></li>
@@ -107,7 +107,19 @@ const MovieApp = Vue.component('movie-app',{
             }
             //console.log(range)
             return range
-        }
+        },
+        countPage_child(){
+            let range=[]
+            if(this.$refs.SearchComp){
+                console.log(this.$refs.SearchComp)
+                for (i = this.$refs.SearchComp.infPage; i<=this.$refs.SearchComp.supPage ;i++){
+                    range.push(i)
+                }
+                //console.log(range)
+            }
+            
+            return range
+        },
     },
     methods:{
         setPage(n){

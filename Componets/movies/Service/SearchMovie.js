@@ -1,7 +1,7 @@
 let SearchComp = {
     template : `
         <div>
-            <form @submit.prevent="searchMovie" class="form-inline md-form form-sm mt-0">
+            <form @submit.prevent="newSearch" class="form-inline md-form form-sm mt-0">
                 <div class="input-group md-form form-sm form-2 pl-0 w-100">
                     <div v-show="query" class="input-group-append">                        
                         <span class="btn btn-danger" @click="reset()">
@@ -30,19 +30,42 @@ let SearchComp = {
             inputvalue:'',
             query:'',
             page:1,
-            total_pages:1
+            total_pages:1,
+            infPage:1,
+            supPage:10
         }
     },
-
+    computed:{
+        countPage(){
+            let range=[]
+            for (i = this.infPage; i<=this.supPage ;i++){
+                range.push(i)
+            }
+            //console.log(range)
+            return range
+        },
+    },
     methods:{
+        newSearch(){
+            this.infPage=1
+            this.page=1
+            this.supPage=10
+            this.searchMovie()
+        },
         searchMovie(){
             //@submit.prevent="searchMovie"  para prevenir que siga el submit
             const URL = `${BASEURL}search/movie?query=${this.query}&api_key=${APIKEY}&language=es-MX&page=${this.page}`
             //console.log(URL)
             fetch(URL)
                 .then(response => response.json())
-                .then((data) => {      
-                    this.total_pages = data.total_pages              
+                .then((data) => {   
+                    if(data.total_pages < 10){
+                        this.total_pages = data.total_pages            
+                        this.supPage = data.total_pages
+                    }else{
+                        this.total_pages = data.total_pages                                                            
+                    }  
+                    
                     this.$emit('input',data) // emite y actuliza directamente searchMovies
                 })
         },
