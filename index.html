@@ -11,6 +11,9 @@
 <body>
     <!-- cdn-Vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- cdn-Vuex -->
+    <script src="  https://unpkg.com/vuex@2.0.0"></script>
+  
     <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
     <!-- cdn-Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js" integrity="sha384-KsvD1yqQ1/1+IA7gi3P0tyJcT3vR+NdBTt13hSJ2lnve8agRGXTTyNaBYmCR/Nwi" crossorigin="anonymous"></script>
@@ -112,13 +115,32 @@
         ]
 
         let router =new VueRouter({
-            mode: 'history',
+            mode: 'history', // para que quite los #/
             routes
+        })
+
+        //Vuex -> Store
+        let store= new Vuex.Store({
+            state:{
+                favMovies:[]
+            },
+            mutations:{
+                toogleFavMovie(state,movie){
+                    let index= state.favMovies.findIndex(favmovie => movie.id === favmovie.id)
+                    if(index>=0){
+                        state.favMovies.splice(index,1)
+                        return
+                    }
+                    state.favMovies.push(movie)
+                }
+            }
         })
 
         let vm = new Vue({
             el:'#App',
-            router
+            router,
+            //store:store
+            store
         })
 
     </script>

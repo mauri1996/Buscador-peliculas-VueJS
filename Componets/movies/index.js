@@ -5,7 +5,8 @@ const MovieApp = Vue.component('movie-app',{
                 <SearchComp ref="SearchComp" v-model="searchMovies"/>
                 
                 <div v-show=" !Object.keys(searchMovies).length">
-                    <h2>Peliculas App</h2>
+                    <h2>Peliculas App </h2>                    
+                    
                     <div class="row">
                         <div class=" col-12 col-md-6 col-lg-4 py-2" :ref="'movie-'+item.id" v-for="(item,key) in movies">
                             <MovieComponent  
@@ -73,13 +74,14 @@ const MovieApp = Vue.component('movie-app',{
     ,
     data (){
         return{
+            add:0,
             title: 'Props a hijos',
             movies: [
                
             ],
             showLike:false,
             user:{
-                name:'mauri',
+                name:'Mauri',
                 lastname:'C'
             },
             oldUser:{
@@ -100,6 +102,14 @@ const MovieApp = Vue.component('movie-app',{
         
     },
     computed:{
+        ...Vuex.mapState({
+            //se puede usar directaemnte ['aa','dddd'] sin hacer objeto
+            favoritas: ['favMovies'], // renombra el store para mejor usabilidad
+            //counter :['counter']         // tener mas de 2 estados
+        })  ///para no escribir $store.state
+
+        ,
+
         countPage(){
             let range=[]
             for (i = this.infPage; i<=this.supPage ;i++){
@@ -111,7 +121,7 @@ const MovieApp = Vue.component('movie-app',{
         countPage_child(){
             let range=[]
             if(this.$refs.SearchComp){
-                console.log(this.$refs.SearchComp)
+                //console.log(this.$refs.SearchComp)
                 for (i = this.$refs.SearchComp.infPage; i<=this.$refs.SearchComp.supPage ;i++){
                     range.push(i)
                 }
@@ -122,6 +132,9 @@ const MovieApp = Vue.component('movie-app',{
         },
     },
     methods:{
+
+        ...Vuex.mapMutations(['toogleFavMovie']), /// paa traer metodos del store --- importante  se puede hacer objeto para cambiar nombre
+
         setPage(n){
 
             // solucion sin metodos actualiza toda la pagina
@@ -172,10 +185,12 @@ const MovieApp = Vue.component('movie-app',{
             this.getPopularMovies()
             
         },
-        onToogleLike (data){
+        onToogleLike (data){            
             let movieLike = this.movies.find(movie => movie.id === data.id)
             movieLike.like = data.like
-            this.showLike = data.like
+            this.showLike = data.like            
+            this.toogleFavMovie(movieLike)
+            //this.$store.commit('toogleFavMovie',movieLike)  // con ...Vuex.mapMutations se simplifica esto
         },
         getPopularMovies(){
             const URL = `${BASEURL}discover/movie?sort_by=popularity.desc&api_key=${APIKEY}&page=${this.page}`
@@ -204,6 +219,10 @@ const MovieApp = Vue.component('movie-app',{
 
 
 /*
-   
+    {{favoritas}}
+   {{$store.state.counter}} para acceder aa los dtos de store ->> se mejora con mapVue
+    <button @click="$store.commit('add')">+</button> accceder a los metodo de mutations
+    <input v-model="add" type="number"></input>
+    <button @click="$store.commit('add',add)">+</button>
 
 */

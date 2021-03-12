@@ -1,26 +1,26 @@
 let MovieComponent ={
     template: `
-            <div v-if="cover" :id="id | formatId" class="card" :class="{'movie-like': like}">
+            <div v-if="cover" :id="id | formatId" class="card" :class="{'movie-like': isFav}">
                 <div class="card-img-top">            
-                    <ImageMovie :cover="cover | completarPoster " :like="like" ></ImageMovie>
+                    <ImageMovie :cover="cover | completarPoster " :like="isFav" ></ImageMovie>
                 </div>
                 <div class="card-body">
-                    <h2 class="card-title"> <b>Titulo:</b> {{title | uppercase }} </h2>
+                    <h2 class="card-title"> <b>Titulo:</b> {{title | uppercase }} {{$store.state.counter}} </h2>
                     <p class="card-text" >{{synopsis | formateo}} </p>
                     
                     <button class="btn" :class="{
-                        'btn-like':like,
-                        'btn-ligth':!like
+                        'btn-like': isFav,
+                        'btn-ligth': !isFav
                     }" @click="tooglelike">
                     
-                        <span v-text="like                    
+                        <span v-text="isFav                    
                         ? 'Favorita'
                         : 'Agregar a favoritos'
                         "></span>
 
                         <i class="fa-heart" :class="{
-                            'fas': like,
-                            'far':!like
+                            'fas': isFav,
+                            'far':!isFav
                         }"></i>
 
                     </button>
@@ -83,13 +83,35 @@ let MovieComponent ={
             }               
         }
     },
+    computed:{
+        ...Vuex.mapState({
+            //se puede usar directaemnte ['aa','dddd'] sin hacer objeto
+            favoritas: ['favMovies'], // renombra el store para mejor usabilidad
+            //counter :['counter']         // tener mas de 2 estados
+        }),  
+        // revizara si el index de sta pelicula esta en el estado global
+        isFav(){
+            let favMovies = this.favoritas
+            let index = favMovies.findIndex(movie => movie.id === this.id)
+
+            return index >= 0
+        }
+
+    },
     
     methods:{
         tooglelike (){
             /// la maneras mas rapida sin usar eventos
-            let movie = this.$parent.movies.find(m=> m.id === this.id)
-            movie.like= !this.like
-            this.$parent.showLike=!this.like // xq si ya es true se pasa falso y no hara la animacion            
+        //     let movie = this.$parent.movies.find(m=> m.id === this.id)
+        //     movie.like= !this.like
+        //     this.$parent.showLike=!this.like // xq si ya es true se pasa falso y no hara la animacion            
+        /// se usara un evento para poder actualizar el estado global
+
+        let data = {
+            id: this.id,
+            like:!this.like
+        }
+        this.$emit('changeLike',data)
         }
     },
     
